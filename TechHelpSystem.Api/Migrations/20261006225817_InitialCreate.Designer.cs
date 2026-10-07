@@ -12,7 +12,7 @@ using TechHelpSystem.Api.Data;
 namespace TechHelpSystem.Api.Migrations
 {
     [DbContext(typeof(TechHelpContext))]
-    [Migration("20260924054954_InitialCreate")]
+    [Migration("20261006225817_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,46 @@ namespace TechHelpSystem.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("TechHelpSystem.Api.Models.Chamado", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("AtualizadoEm")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("CriadoEm")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("Prioridade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SolicitanteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SolicitanteId");
+
+                    b.ToTable("Chamados", (string)null);
+                });
 
             modelBuilder.Entity("TechHelpSystem.Api.Models.Solicitante", b =>
                 {
@@ -52,6 +92,17 @@ namespace TechHelpSystem.Api.Migrations
                         .IsUnique();
 
                     b.ToTable("Solicitantes", (string)null);
+                });
+
+            modelBuilder.Entity("TechHelpSystem.Api.Models.Chamado", b =>
+                {
+                    b.HasOne("TechHelpSystem.Api.Models.Solicitante", "Solicitante")
+                        .WithMany()
+                        .HasForeignKey("SolicitanteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Solicitante");
                 });
 #pragma warning restore 612, 618
         }
